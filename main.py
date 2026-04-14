@@ -1,0 +1,111 @@
+from habit import Habit
+from storage import Storage
+from datetime import datetime
+
+
+def show_menu():
+    print("\n=== ТРЕКЕР ПРИВЫЧЕК ===")
+    print("1. Показать все привычки")
+    print("2. Добавить привычку")
+    print("3. Отметить выполнение")
+    print("4. Удалить привычку")
+    print("5. Статистика")
+    print("0. Выход")
+    return input("Выберите пункт: ")
+
+
+def show_all_habits(storage):
+    habits = storage.get_all_habits()
+    if not habits:
+        print("\nНет привычек. Добавьте первую!")
+        return
+
+    print("\n=== ВАШИ ПРИВЫЧКИ ===")
+    for i, habit in enumerate(habits, 1):
+        print(f"{i}. {habit}")
+
+
+def add_habit(storage):
+    name = input("\nНазвание привычки: ")
+    if storage.get_habit(name):
+        print("Привычка с таким названием уже существует!")
+        return
+
+    description = input("Описание (необязательно): ")
+    habit = Habit(name, description)
+    storage.add_habit(habit)
+    print(f"Привычка '{name}' добавлена!")
+
+
+def mark_completed(storage):
+    name = input("\nНазвание привычки: ")
+    habit = storage.get_habit(name)
+
+    if not habit:
+        print("Привычка не найдена!")
+        return
+
+    date_str = input("Дата (YYYY-MM-DD) или Enter для сегодня: ")
+    date = None if not date_str else date_str
+
+    if habit.mark_completed(date):
+        print(f"Привычка '{habit.name}' отмечена!")
+    else:
+        print("Уже отмечено за эту дату!")
+
+
+def remove_habit(storage):
+    name = input("\nНазвание привычки для удаления: ")
+    habit = storage.get_habit(name)
+
+    if not habit:
+        print("Привычка не найдена!")
+        return
+
+    confirm = input(f"Удалить '{name}'? (да/нет): ")
+    if confirm.lower() == 'да':
+        storage.remove_habit(name)
+        print("Привычка удалена!")
+
+
+def show_statistics(storage):
+    habits = storage.get_all_habits()
+    if not habits:
+        print("\nНет привычек для статистики!")
+        return
+
+    print("\n=== СТАТИСТИКА ===")
+    total = len(habits)
+    today = datetime.now().strftime("%Y-%m-%d")
+    completed_today = sum(1 for h in habits if today in h.completed_dates)
+
+    print(f"Всего привычек: {total}")
+    print(f"Выполнено сегодня: {completed_today}/{total}")
+
+
+def main():
+
+    storage = Storage()
+
+    while True:
+        choice = show_menu()
+
+        if choice == "1":
+            show_all_habits(storage)
+        elif choice == "2":
+            add_habit(storage)
+        elif choice == "3":
+            mark_completed(storage)
+        elif choice == "4":
+            remove_habit(storage)
+        elif choice == "5":
+            show_statistics(storage)
+        elif choice == "0":
+            print("\nДо свидания!")
+            break
+        else:
+            print("\nНеверный выбор!")
+
+
+if __name__ == "__main__":
+    main()
