@@ -2,6 +2,9 @@
 
 Консольное приложение для отслеживания ежедневных привычек.
 
+<img width="962" height="476" alt="image" src="https://github.com/user-attachments/assets/ef438ae6-2ae7-4c3d-9d59-c95e1e021afa" />
+
+
 ## Возможности
 
 - Добавление и удаление привычек
