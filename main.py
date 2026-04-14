@@ -11,6 +11,7 @@ def show_menu():
     print("4. Удалить привычку")
     print("5. Статистика")
     print("6. Поиск привычки")
+    print("7. Экспорт в CSV")
     print("0. Выход")
     return input("Выберите пункт: ")
 
@@ -137,6 +138,8 @@ def main():
             show_statistics(storage)
         elif choice == "6":
             search_habit(storage)
+        elif choice == "7":
+            export_to_csv(storage)
         elif choice == "0":
             print("\nДо свидания!")
             break
@@ -144,5 +147,28 @@ def main():
             print("\nНеверный выбор!")
 
 
+def export_to_csv(storage):
+    import csv
+
+    habits = storage.get_all_habits()
+    if not habits:
+        print("\nНет привычек для экспорта!")
+        return
+
+    filename = input("Имя файла (по умолчанию: habits.csv): ") or "habits.csv"
+
+    with open(filename, 'w', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Название', 'Описание', 'Выполнений', 'Серия'])
+
+        for habit in habits:
+            writer.writerow([
+                habit.name,
+                habit.description,
+                len(habit.completed_dates),
+                habit.get_streak()
+            ])
+
+    print(f"Данные экспортированы в {filename}")
 if __name__ == "__main__":
     main()
