@@ -10,6 +10,7 @@ def show_menu():
     print("3. Отметить выполнение")
     print("4. Удалить привычку")
     print("5. Статистика")
+    print("6. Поиск привычки")
     print("0. Выход")
     return input("Выберите пункт: ")
 
@@ -82,9 +83,25 @@ def show_statistics(storage):
     print(f"Всего привычек: {total}")
     print(f"Выполнено сегодня: {completed_today}/{total}")
 
+    if habits:
+        best = max(habits, key=lambda h: h.get_streak())
+        print(f"Лучшая серия: {best.name} ({best.get_streak()} дней)")
+
+
+def search_habit(storage):
+    query = input("\nВведите название для поиска: ").lower()
+    habits = storage.get_all_habits()
+    found = [h for h in habits if query in h.name.lower()]
+
+    if found:
+        print("\nНайдено привычек:", len(found))
+        for h in found:
+            print(f"  - {h}")
+    else:
+        print("Ничего не найдено!")
+
 
 def main():
-
     storage = Storage()
 
     while True:
@@ -100,6 +117,8 @@ def main():
             remove_habit(storage)
         elif choice == "5":
             show_statistics(storage)
+        elif choice == "6":
+            search_habit(storage)
         elif choice == "0":
             print("\nДо свидания!")
             break
