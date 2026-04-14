@@ -75,17 +75,35 @@ def show_statistics(storage):
         print("\nНет привычек для статистики!")
         return
 
-    print("\n=== СТАТИСТИКА ===")
+    print("\n" + "=" * 40)
+    print("           СТАТИСТИКА")
+    print("=" * 40)
+
     total = len(habits)
     today = datetime.now().strftime("%Y-%m-%d")
     completed_today = sum(1 for h in habits if today in h.completed_dates)
 
-    print(f"Всего привычек: {total}")
-    print(f"Выполнено сегодня: {completed_today}/{total}")
+    print(f"\n Всего привычек: {total}")
+    print(f" Выполнено сегодня: {completed_today} из {total}")
 
+    if total > 0:
+        percentage = (completed_today / total) * 100
+        print(f"📈 Процент выполнения: {percentage:.1f}%")
+
+    print("\n📋 Список привычек:")
+    for habit in habits:
+        streak = habit.get_streak()
+        completed_count = len(habit.completed_dates)
+        print(f"  • {habit.name}")
+        print(f"     Серия: {streak} дней")
+        print(f"    ✓ Всего выполнений: {completed_count}")
+
+    print("\n Лучшая серия:")
     if habits:
         best = max(habits, key=lambda h: h.get_streak())
-        print(f"Лучшая серия: {best.name} ({best.get_streak()} дней)")
+        print(f"   {best.name} - {best.get_streak()} дней!")
+
+    print("=" * 40)
 
 
 def search_habit(storage):
